@@ -1,0 +1,288 @@
+<app-header></app-header>
+<div class="h-screen flex flex-col items-center">
+    <div class="w-full max-w-6xl mt-12 p-8">
+        <!-- Profile and Calendar Section -->
+        <div class="flex flex-col md:flex-row gap-8">
+            <!-- Profile Section -->
+            <div class="bg-white shadow-md rounded-lg w-full max-w-md p-8 flex flex-col items-center">
+                <!-- Profile Image -->
+                <div class="relative mb-4">
+                    <img [src]="user['profilePicture'] || 'https://via.placeholder.com/150'" alt="Profile Picture"
+                        class="w-32 h-32 rounded-full object-cover">
+
+                    <!-- Edit Picture Button (visible only when editing) -->
+                    <div *ngIf="isEditingBio"
+                        class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full">
+                        <label class="cursor-pointer text-white">
+                            <input type="file" (change)="onFileSelected($event)" class="hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span class="ml-2">Change</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Profile Details -->
+                <div class="w-full profile-details">
+                    <!-- Username -->
+                    <div class="mb-4 text-center">
+                        <span class="text-xl font-bold text-gray-900">{{ user['username'] || 'Username' }}</span>
+                    </div>
+
+                    <!-- Name, Surname, and Type -->
+                    <div class="profile-detail">
+                        <span class="profile-detail-label">Name:</span>
+                        <span class="profile-detail-value">{{ user['name'] || 'First Name' }}</span>
+                    </div>
+                    <div class="profile-detail">
+                        <span class="profile-detail-label">Surname:</span>
+                        <span class="profile-detail-value">{{ user['surname'] || 'Surname' }}</span>
+                    </div>
+                    <div class="profile-detail">
+                        <span class="profile-detail-label">Type:</span>
+                        <span class="profile-detail-value">{{ user['userType'] || 'User Type' }}</span>
+                    </div>
+
+                    <!-- Editable Bio Section -->
+                    <div class="mt-4" [formGroup]="profileForm">
+                        <label for="bio" class="text-gray-600 font-semibold">Bio:</label>
+                        <!-- Bio Display (Read-Only) -->
+                        <div *ngIf="!isEditingBio" class="mt-2 p-2 border rounded-md ticket-description">
+                            {{ user['bio'] || 'Write something about yourself...' }}
+                        </div>
+                        <!-- Bio Textarea (Editable) -->
+                        <textarea *ngIf="isEditingBio" id="bio" formControlName="bio"
+                            class="w-full mt-2 p-2 border rounded-md"
+                            placeholder="Write something about yourself..."></textarea>
+                        <!-- Edit/Save Button -->
+                        <button (click)="toggleEdit()"
+                            class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            {{ isEditingBio ? 'Save' : 'Edit' }}
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Delete Account Button -->
+                <div class="mt-8">
+                    <button (click)="openConfirmationModal()"
+                        class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        Delete Account
+                    </button>
+                </div>
+            </div>
+
+            <!-- Calendar Section -->
+            <div class="w-full md:w-96">
+                <app-calendar-user></app-calendar-user>
+            </div>
+        </div>
+
+        <!-- Tickets Section -->
+        <div class="w-full mt-8">
+            <div class="cursor-pointer flex items-center justify-between" (click)="toggleSection('tickets')">
+                <h2 class="text-2xl font-bold mb-4">Your Tickets</h2>
+                <span>{{ showTickets ? '-' : '+' }}</span>
+            </div>
+            <div *ngIf="showTickets">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <div *ngFor="let ticket of tickets" (click)="openTicketDetail(ticket)" class="cursor-pointer">
+                        <div class="p-4 bg-gray-200 rounded-lg shadow-md hover:bg-gray-300">
+                            <h3 class="text-lg font-semibold">{{ ticket.name }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confirmed Requests Section -->
+        <div class="w-full mt-8">
+            <div class="cursor-pointer flex items-center justify-between" (click)="toggleSection('confirmedRequests')">
+                <h2 class="text-2xl font-bold mb-4">Confirmed Requests</h2>
+                <span>{{ showConfirmedRequests ? '-' : '+' }}</span>
+            </div>
+            <div *ngIf="showConfirmedRequests">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <div *ngFor="let request of confirmedRequests" (click)="openRatingModal(request)"
+                        class="p-4 bg-green-200 rounded-lg shadow-md cursor-pointer">
+                        <h3 class="text-lg font-semibold">{{ request.requestName }}</h3>
+                        <h3 class="text-lg">{{ request.requestWorker }}</h3>
+                        <p class="text-sm text-gray-600">{{ request.createdAt | date:'short' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rating Modal -->
+        <div *ngIf="isRatingModalVisible"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg p-8 max-w-lg w-full relative">
+                <button (click)="closeRatingModal()" class="absolute top-2 right-2 text-gray-600 hover:text-gray-900">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <h3 class="text-2xl font-semibold mb-4">Rate Request</h3>
+                <form [formGroup]="ratingForm" (ngSubmit)="submitRating()">
+                    <div class="mb-4">
+                        <label for="description" class="block text-gray-600 font-semibold mb-2">Description:</label>
+                        <textarea id="description" formControlName="description" class="w-full p-2 border rounded-md"
+                            rows="4" placeholder="Enter your description"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="rating" class="block text-gray-600 font-semibold mb-2">Rating:</label>
+                        <select id="rating" formControlName="rating" class="w-full p-2 border rounded-md">
+                            <option value="" disabled>Select a rating</option>
+                            <option value="1">1 - Bad Job</option>
+                            <option value="2">2 - Poor Job</option>
+                            <option value="3">3 - Good Job</option>
+                            <option value="4">4 - Very Good Job</option>
+                            <option value="5">5 - Awesome Job</option>
+                        </select>
+                        <div *ngIf="ratingForm.get('rating')?.invalid && ratingForm.get('rating')?.touched"
+                            class="text-red-500 mt-2">
+                            <div *ngIf="ratingForm.get('rating')?.errors?.['required']">Rating is required.</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between">
+                        <button type="submit"
+                            class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Submit</button>
+                        <button type="button" (click)="closeRatingModal()"
+                            class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- Denied Requests Section -->
+        <div class="w-full mt-8">
+            <div class="cursor-pointer flex items-center justify-between" (click)="toggleSection('deniedRequests')">
+                <h2 class="text-2xl font-bold mb-4">Denied Requests</h2>
+                <span>{{ showDeniedRequests ? '-' : '+' }}</span>
+            </div>
+            <div *ngIf="showDeniedRequests">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    <div *ngFor="let request of deniedRequests" class="p-6 bg-red-100 rounded-lg shadow-lg">
+                        <h3 class="text-lg font-semibold mb-2">{{ request.serviceName }}</h3>
+                        <p class="text-sm text-gray-700 mb-2">Worker: {{ request.workerName }}</p>
+                        <p class="text-sm text-gray-700 mb-4">Reason: {{ request.denialReason }}</p>
+                        <div class="flex justify-between items-center">
+                            <button type="button" (click)="deleteUserDeniedRequest(request.id)"
+                                class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full mt-8">
+            <div class="cursor-pointer flex items-center justify-between" (click)="toggleSection('historyOfRequests')">
+                <h2 class="text-2xl font-bold mb-4">Your History of Requests</h2>
+                <span>{{ showHistoryOfRequests ? '-' : '+' }}</span>
+            </div>
+            <div *ngIf="showHistoryOfRequests">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <div *ngFor="let request of requests" (click)="openRequestDetail(request)" class="cursor-pointer">
+                        <div class="p-4 bg-gray-200 rounded-lg shadow-md hover:bg-gray-300">
+                            <h3 class="text-lg font-semibold">{{ request.serviceName }}</h3>
+                            <p class="text-sm text-gray-600">Done by: {{ request.workerName }}</p>
+                            <p class="text-sm text-gray-600">Desc: {{ request.requestText }}</p>
+                            <p class="text-sm text-gray-600">Status: {{ request.status }}</p>
+                        </div>
+                    </div>
+                    <ng-template #noApplications>
+                        <div class="text-gray-600">No applications available.</div>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Ticket Detail Modal -->
+        <div *ngIf="selectedTicket" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg p-8 max-w-lg w-full relative">
+                <button (click)="closeTicketDetail()" class="absolute top-2 right-2 text-gray-600 hover:text-gray-900">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <h3 class="text-2xl font-semibold mb-4">{{ selectedTicket.name }}</h3>
+                <p class="text-gray-700 mb-4 ticket-description">{{ selectedTicket.description }}</p>
+                <p class="text-sm text-gray-600">Start date: {{ selectedTicket.startDate | date }}</p>
+                <p class="text-sm text-gray-600">End date: {{ selectedTicket.endDate | date }}</p>
+                <div class="mt-4">
+                    <label for="ticketTitle" class="block text-gray-600 font-semibold mb-2">Title:</label>
+                    <input id="ticketTitle" [(ngModel)]="selectedTicket.name" class="w-full p-2 border rounded-md">
+                </div>
+                <div class="mt-4">
+                    <label for="ticketDescription" class="block text-gray-600 font-semibold mb-2">Description:</label>
+                    <textarea id="ticketDescription" [(ngModel)]="selectedTicket.description"
+                        class="w-full p-2 border rounded-md" rows="4"></textarea>
+                </div>
+                <div class="mt-4 flex justify-between">
+                    <button (click)="updateTicket()"
+                        class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Save</button>
+                    <button (click)="deleteTicket(selectedTicket.id!)"
+                        class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confirmation Modal -->
+        <div *ngIf="isConfirmationVisible"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg p-8 max-w-lg w-full relative">
+                <button (click)="closeConfirmationModal()"
+                    class="absolute top-2 right-2 text-gray-600 hover:text-gray-900">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <h3 class="text-xl font-semibold mb-4">Confirm Deletion</h3>
+                <p class="text-gray-700 mb-4">To confirm the deletion of your account, type <strong>DELETE</strong>
+                    below:</p>
+                <input [(ngModel)]="confirmationText" class="w-full p-2 border rounded-md mb-4"
+                    placeholder="Type DELETE here">
+                <div class="flex justify-between">
+                    <button (click)="confirmDeletion()" class="px-4 py-2 rounded-md text-white focus:outline-none"
+                        [ngClass]="{
+                        'bg-red-500 hover:bg-red-600': confirmationText === 'DELETE',
+                        'bg-gray-500 cursor-not-allowed': confirmationText !== 'DELETE'
+                    }" [disabled]="confirmationText !== 'DELETE'">
+                        Confirm
+                    </button>
+                    <button (click)="closeConfirmationModal()"
+                        class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-gray-600">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="isRequestDetailModalVisible"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg p-8 max-w-lg w-full relative">
+                <button (click)="closeRequestDetail()" class="absolute top-2 right-2 text-gray-600 hover:text-gray-900">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <h3 class="text-2xl font-semibold mb-4">Request Details</h3>
+                <p class="text-gray-700 mb-4"><strong>Service Name:</strong> {{ selectedRequest.serviceName }}</p>
+                <p class="text-gray-700 mb-4"><strong>Requested By:</strong> {{ selectedRequest.workerName }}</p>
+                <p class="text-gray-700 mb-4"><strong>Request Text:</strong> {{ selectedRequest.requestText }}</p>
+                <p class="text-gray-700 mb-4"><strong>Start Date:</strong> {{ selectedRequest.startDate }}</p>
+                <p class="text-gray-700 mb-4"><strong>End Date:</strong> {{ selectedRequest.endDate }}</p>
+            </div>
+        </div>
+
+        <app-user-applications></app-user-applications>
+
+    </div>
+</div>

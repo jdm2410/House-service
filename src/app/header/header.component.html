@@ -1,0 +1,63 @@
+<header *ngIf="!isLoading" class="bg-gray-800 shadow">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <!-- Logo Section -->
+            <div class="flex-shrink-0 flex items-center">
+                <a href="#" class="text-logo text-white">
+                    HOUSE SERVICE
+                </a>
+            </div>
+
+            <!-- Centered Button Section -->
+            <div class="flex-grow flex items-center justify-center">
+                <ng-container *ngIf="user$ | async as userProfile">
+                    <!-- Conditional Button Text based on User Type -->
+                    <a *ngIf="userType === 'worker'; else defaultButton" href="/create-service"
+                        class="bg-green-600 text-white px-4 py-2 rounded-full text-md font-medium shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-300 ease-in-out">
+                        Create a Service
+                    </a>
+                    <ng-template #defaultButton>
+                        <a href="/create-ticket"
+                            class="bg-green-600 text-white px-4 py-2 rounded-full text-md font-medium shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-300 ease-in-out">
+                            Create a Ticket
+                        </a>
+                    </ng-template>
+                </ng-container>
+            </div>
+
+            <!-- Right Side (Profile or CTA) -->
+            <div class="flex items-center space-x-4">
+                <ng-container *ngIf="user$ | async as userProfile; else loggedOut">
+                    <!-- User is Logged In -->
+                    <div class="relative flex items-center space-x-4">
+                        <!-- Dynamic Profile URL based on userType -->
+                        <a [href]="userType === 'worker' ? '/profile-worker' : '/profile-user'">
+                            <button class="flex items-center text-sm rounded-full">
+                                <span class="mr-2 text-white  hover:text-green-600 focus:text-green-800">{{
+                                    userProfile.username || 'User' }}</span>
+                            </button>
+                        </a>
+                        <button (click)="logout()"
+                            class="text-green-600 hover:text-green-700 px-3 py-2 rounded-md text-sm font-medium">
+                            Log Out
+                        </button>
+                    </div>
+                </ng-container>
+                <ng-template #loggedOut>
+                    <!-- User is Not Logged In -->
+                    <a href="/login"
+                        class="bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700">Login
+                    </a>
+                    <a href="/register"
+                        class="bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700">Sign
+                        Up</a>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Loading Spinner (shown while loading) -->
+<div *ngIf="isLoading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="spinner"></div>
+</div>

@@ -1,0 +1,51 @@
+/* worker-dashboard.component.css */
+.truncate-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 4.5em;
+    line-height: 1.5em;
+}
+
+/* main.component.css */
+
+/* Sidebar */
+.sidebar {
+    transition: width 0.3s ease;
+  }
+  
+  /* Sidebar Toggle Button */
+  .sidebar-button {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    background-color: #1f2937; /* Tailwind blue-500 */
+    color: #ffffff;
+    padding: 0.5rem;
+    border-radius: 9999px; /* Fully rounded button */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 50;
+    /* Ensure button is visible above other elements */
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Ensure button text and icon are properly aligned */
+  .sidebar-button span {
+    font-size: 0.875rem; /* Tailwind text-sm */
+  }
+  
+  /* Main Content */
+  .main-content {
+    transition: margin-left 0.3s ease;
+    margin-left: 0; /* Ensure margin-left is initially zero */
+  }
+  
+  /* Adjust margin-left based on the sidebar state */
+  .sidebar-open .main-content {
+    margin-left: 16rem; /* Adjust according to the width of the sidebar */
+  }
+  
+  

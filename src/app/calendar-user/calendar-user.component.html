@@ -1,0 +1,39 @@
+<div class="calendar">
+    <!-- Calendar Header -->
+    <div class="calendar-header">
+        <button (click)="previousMonth()">Previous</button>
+        <span>{{ monthNames[currentMonth] }} {{ currentYear }}</span>
+        <button (click)="nextMonth()">Next</button>
+    </div>
+
+    <!-- Week Days -->
+    <div class="weekdays">
+        <div *ngFor="let day of weekDays" class="weekday">{{ day }}</div>
+    </div>
+
+    <!-- Calendar Days -->
+    <div class="calendar-days">
+        <div *ngFor="let day of calendarDays" [class.today]="day.isToday" [class.selected]="day.isSelected"
+            [class.in-selected-range]="day.isInSelectedRange"
+            [class.has-tickets]="day.date && hasTicketsOrRequests(day.date)" (click)="day.date && selectDate(day)"
+            class="calendar-day">
+            {{ day.day }}
+            <div *ngIf="day.date && hasTicketsOrRequests(day.date)" class="event-indicator"></div>
+        </div>
+    </div>
+
+
+    <!-- Tickets and Requests for Selected Date -->
+    <div *ngIf="selectedDate" class="tickets-list">
+        <h3>Events for {{ formattedSelectedDate }}</h3>
+        <div *ngIf="getTicketsOrRequestsForDate(selectedDate).length === 0">No events for this date.</div>
+        <div *ngFor="let item of getTicketsOrRequestsForDate(selectedDate)" class="ticket">
+            <h4 *ngIf="item.serviceName">Service: {{ item.serviceName }}</h4>
+            <p *ngIf="item.workerName">Worker: {{ item.workerName }}</p>
+            <p *ngIf="item.requestText">Request Details: {{ item.requestText }}</p>
+            <p *ngIf="item.status">Status: {{ item.status }}</p>
+            <p *ngIf="item.category">Category: {{ item.category }}</p>
+            <p *ngIf="item.endDate">Finish by: {{ item.endDate }}</p>
+        </div>
+    </div>
+</div>

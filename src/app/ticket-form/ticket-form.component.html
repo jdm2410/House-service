@@ -1,0 +1,46 @@
+<app-header></app-header>
+<br>
+<div class="max-w-xl mx-auto bg-white shadow-md rounded-lg p-8">
+    <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
+        <div class="mb-4">
+            <label for="name" class="block text-gray-700 font-semibold">Ticket Name</label>
+            <input type="text" id="name" formControlName="name" class="w-full mt-2 p-2 border rounded-md" />
+        </div>
+
+        <div class="mb-4">
+            <label for="category" class="block text-gray-700 font-semibold">Category</label>
+            <select id="category" formControlName="category" class="w-full mt-2 p-2 border rounded-md">
+                <option value="Kitchen">Kitchen</option>
+                <option value="Garden">Garden</option>
+                <option value="Bedroom">Bedroom</option>
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label for="description" class="block text-gray-700 font-semibold">Description</label>
+            <textarea id="description" formControlName="description"
+                class="w-full mt-2 p-2 border rounded-md"></textarea>
+        </div>
+
+        <div class="mb-4">
+            <label for="startDate" class="block text-gray-700 font-semibold">Start Date</label>
+            <input type="date" id="startDate" formControlName="startDate" class="w-full mt-2 p-2 border rounded-md" />
+            <div *ngIf="ticketForm.get('startDate')?.errors?.['startDateInvalid']" class="text-red-500 mt-1">
+                Start date cannot be in the past.
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label for="endDate" class="block text-gray-700 font-semibold">End Date</label>
+            <input type="date" id="endDate" formControlName="endDate" class="w-full mt-2 p-2 border rounded-md" />
+            <div *ngIf="ticketForm.hasError('endDateInvalid')" class="text-red-500 mt-1">
+                End date must be at least one day after the start date.
+            </div>
+        </div>
+
+
+        <button type="submit" class="mt-4 px-4 py-2 bg-green-600 text-white rounded-md">
+            {{ isEditMode ? 'Update Ticket' : 'Create Ticket' }}
+        </button>
+    </form>
+</div>

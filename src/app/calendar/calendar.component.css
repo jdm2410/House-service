@@ -1,0 +1,124 @@
+/* Calendar container */
+.calendar {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+/* Header with month and navigation */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.calendar-header button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.calendar-header button:hover {
+  background-color: #0056b3;
+}
+
+.calendar-header span {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+/* Week days header */
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.weekday {
+  text-align: center;
+  font-weight: bold;
+  color: #555;
+}
+
+/* Calendar days */
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+}
+
+.calendar-day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.calendar-day.today {
+  background-color: #e3f2fd;
+  border: 2px solid #2196f3;
+}
+
+.calendar-day.selected {
+  background-color: #bbdefb;
+  border: 2px solid darkgreen;
+}
+
+.calendar-day.has-tickets {
+  background-color: rgb(50, 195, 50);
+}
+
+.calendar-day.end-date-ticket{
+  background-color: lightcoral;
+}
+
+/* Tickets list */
+.tickets-list {
+  margin-top: 1rem;
+}
+
+.tickets-list h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.ticket {
+  padding: 1rem;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.ticket h4 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.ticket .description {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  color: #333;
+}
+
+.calendar-day.in-selected-range {
+  background-color: rgba(255, 0, 0, 0.2); /* Red background for range */
+}
+.in-range {
+  background-color: lightcoral; /* Highlight color */
+}
+
+
+
+/* Add this to your component's CSS file */

@@ -1,0 +1,23 @@
+<div class="container mx-auto  pt-6">
+    <h2 class="text-2xl font-bold mb-6">Service Applications</h2>
+
+    <div *ngIf="applications.length === 0" class="text-gray-600">
+        No applications available.
+    </div>
+
+    <div *ngFor="let application of applications" class="bg-white shadow-md rounded-lg p-6 mb-4">
+        <h3 class="text-xl font-semibold">{{ application.serviceName }}</h3>
+        <p class="text-gray-700">{{ application.requestText }}</p>
+        <p class="text-gray-500 text-sm">Requested by: {{ application.userName }}</p>
+        <p class="text-gray-500 text-sm">Start Date: {{ application.startDate }}</p>
+        <p class="text-gray-500 text-sm">End Date: {{ application.endDate }}</p>
+        <p class="text-gray-500 text-sm">Status: {{ application.status }}</p>
+
+        <div class="mt-4 flex space-x-4">
+            <button *ngIf="application.status === 'Pending'" (click)="acceptApplication(application)"
+                class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Accept</button>
+            <button *ngIf="application.status === 'Pending'" (click)="denyApplication(application)"
+                class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">Deny</button>
+        </div>
+    </div>
+</div>

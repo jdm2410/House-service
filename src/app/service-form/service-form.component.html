@@ -1,0 +1,52 @@
+<app-header></app-header>
+<div class="max-w-xl mx-auto bg-white shadow-md rounded-lg p-8">
+    <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()">
+        <div class="mb-4">
+            <label for="name" class="block text-gray-700 font-semibold">Service Name</label>
+            <input type="text" id="name" formControlName="name" class="w-full mt-2 p-2 border rounded-md" />
+        </div>
+
+        <div class="mb-4">
+            <label for="description" class="block text-gray-700 font-semibold">Description</label>
+            <textarea id="description" formControlName="description"
+                class="w-full mt-2 p-2 border rounded-md"></textarea>
+        </div>
+
+        <div class="mb-4">
+            <label for="category" class="block text-gray-700 font-semibold">Category</label>
+            <select id="category" formControlName="category" class="w-full mt-2 p-2 border rounded-md">
+                <option value="Kitchen">Kitchen</option>
+                <option value="Garden">Garden</option>
+                <option value="Bedroom">Bedroom</option>
+            </select>
+        </div>
+
+
+        <div class="mb-4">
+            <label class="block text-gray-700 font-semibold">Working Hours</label>
+            <div class="flex space-x-4">
+                <div>
+                    <label for="startTime" class="block text-sm text-gray-500">Start Time</label>
+                    <input type="time" id="startTime" formControlName="startTime" class="mt-2 p-2 border rounded-md" />
+                </div>
+                <div>
+                    <label for="endTime" class="block text-sm text-gray-500">End Time</label>
+                    <input type="time" id="endTime" formControlName="endTime" class="mt-2 p-2 border rounded-md" />
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label for="cost" class="block text-gray-700 font-semibold">Average Cost</label>
+            <div class="flex items-center mt-2">
+                <input type="number" id="cost" formControlName="cost" class="w-full p-2 border rounded-md" />
+                <span class="ml-2 text-gray-700">€/hr</span>
+            </div>
+        </div>
+
+
+        <button type="submit" class="mt-4 px-4 py-2 bg-green-600 text-white rounded-md">
+            {{ isEditMode ? 'Update Service' : 'Create Service' }}
+        </button>
+    </form>
+</div>

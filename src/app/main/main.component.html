@@ -1,0 +1,205 @@
+<app-header></app-header>
+<div class="flex h-screen bg-gray-100">
+    <!-- Sidebar -->
+    <div [ngClass]="{'w-64': isSidebarOpen, 'w-0': !isSidebarOpen}"
+        class="transition-all duration-300 bg-white shadow-md h-full fixed left-0 top-0 bottom-0 z-40 overflow-y-auto">
+        <button (click)="toggleSidebar()" class="p-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <div class="p-4">
+            <!-- Category Filter -->
+            <h2 class="text-lg font-semibold mb-2">Filter by Category</h2>
+            <select [(ngModel)]="selectedCategory" (change)="filterTickets(); filterServices()"
+                class="w-full p-2 border rounded-md">
+                <option value="">All Categories</option>
+                <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+            </select>
+
+            <!-- Date Range Filter -->
+            <h2 class="text-lg font-semibold mt-4 mb-2">Filter by Date Range</h2>
+            <input type="date" [(ngModel)]="dateRange.from" (change)="filterTickets(); filterServices()"
+                class="w-full p-2 border rounded-md">
+            <input type="date" [(ngModel)]="dateRange.to" (change)="filterTickets(); filterServices()"
+                class="w-full p-2 border rounded-md mt-2">
+        </div>
+    </div>
+
+    <!-- Sidebar Toggle Button -->
+    <button (click)="toggleSidebar()" *ngIf="!isSidebarOpen"
+        class="fixed bottom-4 left-4 bg-gray-800 text-white p-2 rounded-full shadow-md z-50 flex items-center">
+        <span class="text-sm">Filter</span>
+    </button>
+
+    <!-- Main Content -->
+    <div [ngClass]="{'ml-64': isSidebarOpen, 'ml-0': !isSidebarOpen}" class="flex-1 p-8 transition-all duration-300">
+        <h1 class="text-2xl font-bold mb-4">Dashboard</h1>
+
+        <!-- Display tickets for workers -->
+        <div *ngIf="userType === 'worker'" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div *ngFor="let ticket of filteredTickets" (click)="applyForTicket(ticket)"
+                class="p-4 bg-white border rounded-lg shadow-md cursor-pointer hover:bg-gray-50 transition-transform transform hover:scale-105">
+                <div class="flex items-center mb-4">
+                    <img [src]="userProfiles[ticket.userId].profilePicture || 'https://via.placeholder.com/50'"
+                        alt="Profile Picture" class="w-16 h-16 rounded-full object-cover mr-4">
+                    <div>
+                        <h3 class="text-lg font-semibold">{{ userProfiles[ticket.userId].username || 'Unknown User' }}
+                        </h3>
+                        <p class="text-sm text-gray-600">Work category: {{ ticket.category }}</p>
+                        <p class="text-gray-700 mb-4">Start/End date: {{ ticket.startDate | date:'shortDate' }} -
+                            {{ ticket.endDate | date:'shortDate' }}</p>
+
+                    </div>
+                </div>
+                <h4 class="text-xl font-bold">{{ ticket.name }}</h4>
+                <p class="text-gray-700 mt-2 text-sm overflow-hidden overflow-ellipsis" [title]="ticket.description">
+                    {{ ticket.description.length > 100 ? (ticket.description | slice:0:100) + '...' : ticket.description
+                    }}
+                </p>
+                <button (click)="applyForTicket(ticket)"
+                    class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                    Apply
+                </button>
+            </div>
+        </div>
+
+        <div *ngIf="selectedTicket" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg p-8 max-w-lg w-full relative">
+                <button (click)="closeTicketApplyForm()"
+                    class="absolute top-2 right-2 text-gray-600 hover:text-gray-900">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+                <!-- Ticket Details -->
+                <h3 class="text-2xl font-semibold mb-4">Ticket name: {{ selectedTicket.name }}</h3>
+                <p class="text-gray-700 mb-4">Description: {{ selectedTicket.description }}</p>
+                <p class="text-sm text-gray-600">Work category: {{ selectedTicket.category }}</p>
+                <p class="text-gray-700 mb-4">Start date: {{ selectedTicket.startDate | date:'shortDate' }}</p>
+                <p class="text-gray-700 mb-4">End date: {{ selectedTicket.endDate | date:'shortDate' }}</p>
+
+                <!-- User Input Form -->
+                <div class="mt-4">
+                    <label for="requestText" class="block text-gray-600 font-semibold mb-2">Your Request:</label>
+                    <textarea id="requestText" [(ngModel)]="ticketRequestText" class="w-full p-2 border rounded-md"
+                        rows="4" placeholder="Describe your request"></textarea>
+                </div>
+
+                <div class="mt-4">
+                    <label for="requestCost" class="block text-gray-600 font-semibold mb-2">Request Cost:</label>
+                    <input id="requestCost" type="number" [(ngModel)]="ticketRequestCost"
+                        class="w-full p-2 border rounded-md" placeholder="Enter cost" />
+                </div>
+
+                <div class="mt-4">
+                    <label for="requestStartTime" class="block text-gray-600 font-semibold mb-2">Start Time:</label>
+                    <input id="requestStartTime" type="time" [(ngModel)]="ticketRequestStartTime"
+                        class="w-full p-2 border rounded-md" />
+                </div>
+
+                <div class="mt-4">
+                    <label for="requestEndTime" class="block text-gray-600 font-semibold mb-2">End Time:</label>
+                    <input id="requestEndTime" type="time" [(ngModel)]="ticketRequestEndTime"
+                        class="w-full p-2 border rounded-md" />
+                </div>
+
+                <div class="mt-6 flex justify-between">
+                    <button (click)="applyForTicketRequest()"
+                        class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Apply</button>
+                    <button (click)="closeTicketApplyForm()"
+                        class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Display services for users -->
+        <div *ngIf="userType === 'user'" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div *ngFor="let service of filteredServices" (click)="applyForService(service)"
+                class="p-4 bg-white border rounded-lg shadow-md cursor-pointer hover:bg-gray-50 transition-transform transform hover:scale-105">
+                <div class="flex items-center mb-4">
+                    <img [src]="userProfiles[service.userId].profilePicture || 'https://via.placeholder.com/50'"
+                        alt="Profile Picture" class="w-16 h-16 rounded-full object-cover mr-4">
+                    <div>
+                        <h3 class="text-lg font-semibold">{{ userProfiles[service.userId].username || 'Unknown Worker'
+                            }}
+                        </h3>
+                    </div>
+                </div>
+                <h4 class="text-xl font-bold">{{ service.name }}</h4>
+                <p class="text-gray-700 mt-2 text-sm overflow-hidden overflow-ellipsis" [title]="service.description">
+                    {{ service.description.length > 100 ? (service.description | slice:0:100) + '...' :
+                    service.description
+                    }}
+                </p>
+                <button (click)="applyForService(service)"
+                    class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                    Apply
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal for applying to a service -->
+        <div *ngIf="selectedService" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg p-8 max-w-lg w-full relative">
+                <button (click)="closeApplyForm()" class="absolute top-2 right-2 text-gray-600 hover:text-gray-900">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+                <!-- Service Details -->
+                <h3 class="text-2xl font-semibold mb-4">Service name: {{ selectedService.name }}</h3>
+                <p class="text-gray-700 mb-4">Description: {{ selectedService.description }}</p>
+                <p class="text-gray-700 mb-4">Work time: {{ selectedService.startTime }} - {{ selectedService.endTime }}
+                </p>
+                <p class="text-gray-700 mb-4">Cost: {{ selectedService.cost }}€/hr</p>
+
+                <!-- Worker Information -->
+                <div class="mb-4">
+                    <h4 class="text-xl font-semibold">Worker Information</h4>
+                    <p>Name: {{ selectedWorker?.username }}</p>
+                    <p>Rating: {{ selectedWorker?.rating }} / 5</p>
+                    <p>Requests Done: {{ selectedWorker?.requests }}</p>
+                </div>
+
+                <!-- User Input Form -->
+                <div class="mt-4">
+                    <label for="requestText" class="block text-gray-600 font-semibold mb-2">Your Request:</label>
+                    <textarea id="requestText" [(ngModel)]="requestText" class="w-full p-2 border rounded-md" rows="4"
+                        placeholder="Describe your request"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold">Working Dates</label>
+                    <div class="flex space-x-4">
+                        <div>
+                            <label for="startDate" class="block text-sm text-gray-500">Start date</label>
+                            <input type="date" id="startDate" [(ngModel)]="startDate"
+                                (change)="onStartDateChange($event)" [min]="todayDate"
+                                class="mt-2 p-2 border rounded-md" />
+                        </div>
+                        <div>
+                            <label for="endDate" class="block text-sm text-gray-500">End date</label>
+                            <input type="date" id="endDate" [(ngModel)]="endDate" [min]="minEndDate"
+                                (change)="onEndDateChange($event)" class="mt-2 p-2 border rounded-md" />
+                        </div>
+                    </div>
+                    <p *ngIf="dateError" class="text-red-500 mt-2">{{ dateError }}</p>
+                </div>
+
+                <div class="mt-6 flex justify-between">
+                    <button (click)="applyForServiceRequest()"
+                        class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Apply</button>
+                    <button (click)="closeApplyForm()"
+                        class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

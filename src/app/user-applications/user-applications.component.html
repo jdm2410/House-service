@@ -1,0 +1,32 @@
+<div class="container mx-auto pt-6">
+    <h2 class="text-2xl font-bold mb-6">Ticket Applications</h2>
+
+    <div *ngIf="tickets.length === 0" class="text-gray-600">
+        No tickets available.
+    </div>
+
+    <div *ngFor="let ticket of tickets" class="bg-white shadow-md rounded-lg p-6 mb-4">
+        <h3 class="text-xl font-semibold">{{ ticket.name }}</h3>
+        <p class="text-gray-700">{{ ticket.description }}</p>
+        <p class="text-gray-500 text-sm">Start Date: {{ ticket.startDate }}</p>
+        <p class="text-gray-500 text-sm">End Date: {{ ticket.endDate }}</p>
+
+        <div *ngIf="ticket.applications.length > 0" class="mt-4">
+            <h4 class="text-lg font-semibold">Applications:</h4>
+            <div *ngFor="let application of ticket.applications" class="mt-2 bg-gray-100 p-4 rounded-md">
+                <p class="text-gray-700">Worker: {{ application.workerName }}</p>
+                <p class="text-gray-700">Request: {{ application.requestText }}</p>
+                <p class="text-gray-500">Cost: {{ application.cost }}</p>
+                <p class="text-gray-500">Start Time: {{ application.startTime }}</p>
+                <p class="text-gray-500">End Time: {{ application.endTime }}</p>
+                <p class="text-gray-500">Status: {{ application.status }}</p>
+                <div class="mt-4 flex space-x-4">
+                    <button *ngIf="application.status === 'Pending'" (click)="acceptApplication(ticket.id, application)"
+                        class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Accept</button>
+                    <button *ngIf="application.status === 'Pending'" (click)="denyApplication(ticket.id, application)"
+                        class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">Deny</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

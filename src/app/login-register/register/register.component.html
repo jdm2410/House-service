@@ -1,0 +1,105 @@
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold mb-6 text-center text-gray-700">Register</h2>
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+            <!-- User Type Selection -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700">I am a</label>
+                <div class="flex items-center space-x-4 mt-2">
+                    <label class="inline-flex items-center">
+                        <input type="radio" formControlName="userType" value="user"
+                            class="form-radio text-green-600 focus:ring-green-500">
+                        <span class="ml-2 text-gray-700">User</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" formControlName="userType" value="worker"
+                            class="form-radio text-green-600 focus:ring-green-500">
+                        <span class="ml-2 text-gray-700">Worker</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Username Input -->
+            <div class="mb-4">
+                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                <input id="username" type="text" formControlName="username" required
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm">
+                <div *ngIf="registerForm.get('username')?.hasError('required') && registerForm.get('username')?.touched"
+                    class="text-red-500 text-sm">
+                    Username is required.
+                </div>
+                <div *ngIf="registerForm.get('username')?.hasError('usernameTaken') && registerForm.get('username')?.touched"
+                    class="text-red-500 text-sm">
+                    This username is already taken.
+                </div>
+            </div>
+
+            <!-- Name Input -->
+            <div class="mb-4">
+                <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                <input id="name" type="text" formControlName="name" required
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm">
+            </div>
+
+            <!-- Surname Input -->
+            <div class="mb-4">
+                <label for="surname" class="block text-sm font-medium text-gray-700">Surname</label>
+                <input id="surname" type="text" formControlName="surname" required
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm">
+            </div>
+
+            <!-- Email Input -->
+            <div class="mb-4">
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input id="email" type="email" formControlName="email" required
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm">
+                <div *ngIf="registerForm.get('email')?.hasError('required') && registerForm.get('email')?.touched"
+                    class="text-red-500 text-sm">
+                    Email is required.
+                </div>
+                <div *ngIf="registerForm.get('email')?.hasError('email') && registerForm.get('email')?.touched"
+                    class="text-red-500 text-sm">
+                    Please enter a valid email address.
+                </div>
+                <div *ngIf="registerForm.get('email')?.hasError('emailInUse') && registerForm.get('email')?.touched"
+                    class="text-red-500 text-sm">
+                    This email is already in use.
+                </div>
+            </div>
+
+            <!-- Password Input -->
+            <div class="mb-6">
+                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input id="password" type="password" formControlName="password" required
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm">
+            </div>
+
+            <!-- Confirm Password Input -->
+            <div class="mb-6">
+                <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                <input id="confirmPassword" type="password" formControlName="confirmPassword" required
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm">
+                <div *ngIf="registerForm.errors?.['notSame'] && registerForm.get('confirmPassword')?.touched"
+                    class="text-red-500 text-sm">
+                    Passwords do not match.
+                </div>
+            </div>
+
+            <!-- Register Button -->
+            <div class="mb-6">
+                <button type="submit" [disabled]="registerForm.invalid"
+                    class="w-full px-4 py-2 bg-green-600 text-white font-semibold rounded-md shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                    Register
+                </button>
+            </div>
+
+            <!-- Links -->
+            <div class="flex items-center justify-between text-sm text-gray-600">
+                <a href="/login" class="text-gray-600 hover:text-gray-800">Already have an account? Log In</a>
+                <a href="/password-reset" class="text-gray-600 hover:text-green-700 font-semibold">Forgot your
+                    password?</a>
+            </div>
+        </form>
+    </div>
+</div>

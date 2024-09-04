@@ -1,0 +1,331 @@
+/* General styles */
+.bg-gray-100 {
+    background-color: #f7fafc;
+}
+
+.h-screen {
+    height: 100vh;
+}
+
+.max-w-6xl {
+    max-width: 72rem;
+}
+
+.mt-12 {
+    margin-top: 3rem;
+}
+
+.p-8 {
+    padding: 2rem;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.md\:flex-row {
+    flex-direction: row;
+}
+
+.gap-8 {
+    gap: 2rem;
+}
+
+/* Profile Section Styles */
+.bg-white {
+    background-color: #ffffff;
+}
+
+.shadow-md {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.rounded-lg {
+    border-radius: 0.5rem;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.max-w-4xl {
+    max-width: 56rem;
+}
+
+.p-8 {
+    padding: 2rem;
+}
+
+.items-start {
+    align-items: flex-start;
+}
+
+.relative {
+    position: relative;
+}
+
+.w-32 {
+    width: 8rem;
+}
+
+.h-32 {
+    height: 8rem;
+}
+
+.rounded-full {
+    border-radius: 9999px;
+}
+
+.object-cover {
+    object-fit: cover;
+}
+
+/* Profile Details */
+.flex-1 {
+    flex: 1;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.text-xl {
+    font-size: 1.25rem;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+.text-gray-900 {
+    color: #1a202c;
+}
+
+.text-gray-600 {
+    color: #718096;
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.mt-4 {
+    margin-top: 1rem;
+}
+
+.p-2 {
+    padding: 0.5rem;
+}
+
+.border {
+    border-width: 1px;
+}
+
+.rounded-md {
+    border-radius: 0.375rem;
+}
+
+.bg-blue-500 {
+    background-color: #3b82f6;
+}
+
+.text-white {
+    color: #ffffff;
+}
+
+.focus\:outline-none:focus {
+    outline: none;
+}
+
+.focus\:ring-2:focus {
+    box-shadow: 0 0 0 2px #3b82f6;
+}
+
+.focus\:ring-offset-2:focus {
+    box-shadow: 0 0 0 2px #ffffff inset;
+}
+
+.hover\:bg-blue-600:hover {
+    background-color: #2563eb;
+}
+
+/* Calendar Section */
+.md\:w-96 {
+    width: 24rem;
+}
+
+/* Tickets Section */
+.grid-cols-1 {
+    grid-template-columns: repeat(1, 1fr);
+}
+
+.sm\:grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.md\:grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.bg-gray-200 {
+    background-color: #edf2f7;
+}
+
+.hover\:bg-gray-300:hover {
+    background-color: #e2e8f0;
+}
+
+/* Ticket Detail Modal */
+.fixed {
+    position: fixed;
+}
+
+.bg-black {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.bg-opacity-50 {
+    background-opacity: 0.5;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.z-50 {
+    z-index: 50;
+}
+
+.bg-white {
+    background-color: #ffffff;
+}
+
+.rounded-lg {
+    border-radius: 0.5rem;
+}
+
+.p-8 {
+    padding: 2rem;
+}
+
+.max-w-lg {
+    max-width: 32rem;
+}
+
+.relative {
+    position: relative;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.top-2 {
+    top: 0.5rem;
+}
+
+.right-2 {
+    right: 0.5rem;
+}
+
+.text-gray-600 {
+    color: #718096;
+}
+
+.text-gray-700 {
+    color: #4a5568;
+}
+
+.text-gray-900 {
+    color: #1a202c;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+}
+
+.mt-4 {
+    margin-top: 1rem;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.p-2 {
+    padding: 0.5rem;
+}
+
+.border {
+    border-width: 1px;
+}
+
+.rounded-md {
+    border-radius: 0.375rem;
+}
+
+.bg-blue-500 {
+    background-color: #3b82f6;
+}
+
+.hover\:bg-blue-600:hover {
+    background-color: #2563eb;
+}
+
+.bg-red-500 {
+    background-color: #ef4444;
+}
+
+.hover\:bg-red-600:hover {
+    background-color: #dc2626;
+}
+
+.ticket-description {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+/* Profile Details Alignment */
+.profile-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* Space between items */
+}
+
+.profile-detail {
+    display: flex;
+    justify-content: space-between; /* Align label and value */
+    align-items: center;
+}
+
+.profile-detail-label {
+    font-weight: 600;
+    color: #718096; /* Gray color for labels */
+}
+
+.profile-detail-value {
+    color: #1a202c; /* Dark gray color for values */
+}
+
+/* Add this to your component's CSS file or a global stylesheet */
+
+.collapse {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+  }
+  
+  .collapse.show {
+    max-height: 1000px; /* or a value large enough to fit the content */
+    transition: max-height 0.5s ease-in;
+  }
+  
