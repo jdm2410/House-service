@@ -59,14 +59,15 @@ export class ProfileWorkerComponent implements OnInit {
     this.auth.onAuthStateChanged(user => {
       if (user) {
         this.workerId = user.uid;
-        this.loadWorkerData();
-        this.loadWorkerServices();
+        this.loadWorkerData(); // Load worker data
+        this.loadWorkerServices(); // Load services related to the worker
         this.loadRequests(); // Load requests related to the worker
       } else {
         console.error('No user is logged in.');
       }
     });
   }
+  
 
   toggleSection(section: string) {
     switch (section) {
@@ -85,25 +86,35 @@ export class ProfileWorkerComponent implements OnInit {
     }
   }
 
-  loadWorkerData() {
+  loadWorkerData(): void {
     if (!this.workerId) return;
-
+  
     const workerRef = doc(this.firestore, `workers/${this.workerId}`);
+    
+    // Subscribe to worker data
     docData<WorkerProfile>(workerRef).subscribe(
       async (data: WorkerProfile) => {
-        this.worker = data || {};
-        this.profileForm.patchValue({
-          bio: this.worker.bio || ''
-        });
-
-        // Calculate the average rating from related requests
-        await this.calculateAverageRating();
+        if (data) {
+          this.worker = data;
+          this.profileForm.patchValue({
+            bio: this.worker.bio || ''
+          });
+  
+          // Calculate the average rating from related requests
+          await this.calculateAverageRating();
+        } else {
+          this.worker = {}; // Ensure worker is at least an empty object
+          this.profileForm.patchValue({
+            bio: ''
+          });
+        }
       },
       (error: any) => {
         console.error('Error fetching worker data:', error);
       }
     );
   }
+  
 
   async calculateAverageRating() {
     if (!this.workerId) return;
@@ -153,42 +164,48 @@ export class ProfileWorkerComponent implements OnInit {
 
   async onSubmit() {
     if (!this.workerId) return;
-
+  
     if (this.profileForm.valid) {
       const { bio, profilePicture } = this.profileForm.value;
       const workerRef = doc(this.firestore, `workers/${this.workerId}`);
-
+  
       try {
         let profilePictureUrl: string | undefined;
-
+  
         if (profilePicture) {
           const storageRef = ref(this.storage, `profile_pictures/${this.workerId}/${profilePicture.name}`);
           await uploadBytes(storageRef, profilePicture);
           profilePictureUrl = await getDownloadURL(storageRef);
           this.snackBar.open('Profile picture updated!', 'Close', {
             duration: 5000,
-            panelClass: ['error-snackbar'] // Optional: Custom styling
+            panelClass: ['success-snackbar']
           });
         }
-
+  
         const updateData: Partial<WorkerProfile> = { bio };
         if (profilePictureUrl) {
           updateData.profilePicture = profilePictureUrl;
         }
-
+  
         await updateDoc(workerRef, updateData);
         console.log('Profile updated successfully');
         this.snackBar.open('Profile updated!', 'Close', {
           duration: 5000,
-          panelClass: ['error-snackbar'] // Optional: Custom styling
+          panelClass: ['success-snackbar']
         });
         this.isEditingBio = false;
-      } catch (error: any) {
+      } catch (error) {
         console.error('Error updating profile:', error);
+        this.snackBar.open('Failed to update profile. Please try again.', 'Close', {
+          duration: 5000,
+          panelClass: ['error-snackbar']
+        });
       }
     }
   }
-
+  
+  
+  
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
@@ -197,9 +214,11 @@ export class ProfileWorkerComponent implements OnInit {
       });
     }
   }
-
-  toggleEdit() {
+  toggleEdit(): void {
+    console.log('Is Editing Bio:', this.isEditingBio);
+    console.log('Submitting Bio active:', this.profileForm.get('bio')?.value);
     if (this.isEditingBio) {
+      console.log('Submitting Bio:', this.profileForm.get('bio')?.value);
       this.onSubmit();
     } else {
       this.profileForm.patchValue({
@@ -208,6 +227,11 @@ export class ProfileWorkerComponent implements OnInit {
     }
     this.isEditingBio = !this.isEditingBio;
   }
+  
+  
+  
+
+  
 
   async loadWorkerServices() {
     if (!this.workerId) return;

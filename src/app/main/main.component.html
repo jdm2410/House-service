@@ -1,5 +1,5 @@
 <app-header></app-header>
-<div class="flex h-screen bg-gray-100">
+<div *ngIf="isLoggedIn" class="flex h-screen bg-gray-100">
     <!-- Sidebar -->
     <div [ngClass]="{'w-64': isSidebarOpen, 'w-0': !isSidebarOpen}"
         class="transition-all duration-300 bg-white shadow-md h-full fixed left-0 top-0 bottom-0 z-40 overflow-y-auto">
@@ -10,7 +10,7 @@
             </svg>
         </button>
         <div class="p-4">
-            <!-- Category Filter -->
+            <!-- Category Filter (Visible to both Worker and User) -->
             <h2 class="text-lg font-semibold mb-2">Filter by Category</h2>
             <select [(ngModel)]="selectedCategory" (change)="filterTickets(); filterServices()"
                 class="w-full p-2 border rounded-md">
@@ -18,23 +18,39 @@
                 <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
             </select>
 
-            <!-- Date Range Filter -->
-            <h2 class="text-lg font-semibold mt-4 mb-2">Filter by Date Range</h2>
-            <input type="date" [(ngModel)]="dateRange.from" (change)="filterTickets(); filterServices()"
-                class="w-full p-2 border rounded-md">
-            <input type="date" [(ngModel)]="dateRange.to" (change)="filterTickets(); filterServices()"
-                class="w-full p-2 border rounded-md mt-2">
+            <!-- Date Range Filter (Visible to Worker only) -->
+            <div *ngIf="userType === 'worker'">
+                <h2 class="text-lg font-semibold mt-4 mb-2">Filter by Date Range</h2>
+                <input type="date" [(ngModel)]="dateRange.from" (change)="filterTickets(); filterServices()"
+                    class="w-full p-2 border rounded-md">
+                <input type="date" [(ngModel)]="dateRange.to" (change)="filterTickets(); filterServices()"
+                    class="w-full p-2 border rounded-md mt-2">
+            </div>
+
+            <!-- Cost Range Filter (Visible to User only) -->
+            <div *ngIf="userType === 'user'">
+                <h2 class="text-lg font-semibold mt-4 mb-2">Filter by Cost</h2>
+                <span class="text-sm font-semibold mt-4 mb-2">Minimal Cost | €/hr</span>
+                <input type="number" [(ngModel)]="selectedMinCost" (change)="filterTickets(); filterServices()"
+                    placeholder="Min Cost" class="w-full p-2 border rounded-md">
+                <span class="text-sm font-semibold mt-4 mb-2">Maximum Cost | €/hr</span>
+                <input type="number" [(ngModel)]="selectedMaxCost" (change)="filterTickets(); filterServices()"
+                    placeholder="Max Cost" class="w-full p-2 border rounded-md mt-2">
+            </div>
         </div>
+
+
     </div>
 
     <!-- Sidebar Toggle Button -->
-    <button (click)="toggleSidebar()" *ngIf="!isSidebarOpen"
+    <button (click)="toggleSidebar()" *ngIf="!isSidebarOpen && isLoggedIn"
         class="fixed bottom-4 left-4 bg-gray-800 text-white p-2 rounded-full shadow-md z-50 flex items-center">
         <span class="text-sm">Filter</span>
     </button>
 
     <!-- Main Content -->
-    <div [ngClass]="{'ml-64': isSidebarOpen, 'ml-0': !isSidebarOpen}" class="flex-1 p-8 transition-all duration-300">
+    <div *ngIf="isLoggedIn" [ngClass]="{'ml-64': isSidebarOpen, 'ml-0': !isSidebarOpen}"
+        class="flex-1 p-8 transition-all duration-300">
         <h1 class="text-2xl font-bold mb-4">Dashboard</h1>
 
         <!-- Display tickets for workers -->
@@ -201,5 +217,23 @@
             </div>
         </div>
 
+    </div>
+</div>
+<div *ngIf="!isLoggedIn" class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="text-center bg-white p-6 rounded-md shadow-md max-w-lg">
+        <h1 class="text-2xl font-bold mb-4">Welcome to Our Service Platform</h1>
+        <p class="mb-4">
+            This platform connects workers and users to manage and apply for tickets and services.
+        </p>
+        <p class="mb-4">
+            <strong>For Workers:</strong> Create and manage service tickets, and apply for requests from users.
+        </p>
+        <p class="mb-4">
+            <strong>For Users:</strong> Browse available services, create requests, and manage your applications.
+        </p>
+        <p class="mb-4">
+            To start using these features, please <a routerLink="/login" class="text-blue-500 underline">log in</a>
+            or <a routerLink="/register" class="text-blue-500 underline">sign up</a>.
+        </p>
     </div>
 </div>

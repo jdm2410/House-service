@@ -19,12 +19,13 @@ export class MainComponent implements OnInit {
   services: Service[] = [];
   filteredTickets: Ticket[] = [];
   filteredServices: Service[] = [];
-  categories: string[] = ['Kitchen', 'Bedroom', 'Garden']; // Populate categories as needed
+  categories: string[] = ['Kitchen', 'Bedroom', 'Garden', 'Plumbing', 'Painting', 'Woodwork', 'Electricity']; // Populate categories as needed
   dateRange = { from: '', to: '' };
   selectedCategory = '';
   userProfiles: { [userId: string]: UserProfile } = {};
   userType: string | undefined;
-
+  selectedMinCost: number | null = null;
+selectedMaxCost: number | null = null;
   // Variables for the service application modal
   selectedService: Service | null = null;
   selectedWorker: WorkerProfile | null = null;
@@ -34,7 +35,7 @@ export class MainComponent implements OnInit {
   todayDate = new Date().toISOString().split('T')[0]; // Today's date in YYYY-MM-DD format
   minEndDate = ''; // Minimum end date
   dateError: string | null = null; // Error message for invalid dates
-
+  isLoggedIn: boolean = false;
   // Variables for the ticket application modal
   selectedTicket: Ticket | null = null;
   selectedTicketUser: UserProfile | null = null;
@@ -50,6 +51,9 @@ export class MainComponent implements OnInit {
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
         this.fetchUserType(user.uid);
+        this.isLoggedIn = true;
+      }else{
+        this.isLoggedIn = false;
       }
     });
   }
@@ -171,9 +175,14 @@ export class MainComponent implements OnInit {
 
   filterServices() {
     this.filteredServices = this.services.filter(service => {
-      return (!this.selectedCategory || service.category === this.selectedCategory);
+      return (
+        (!this.selectedCategory || service.category === this.selectedCategory) &&
+        (!this.selectedMinCost || service.cost >= this.selectedMinCost) &&
+        (!this.selectedMaxCost || service.cost <= this.selectedMaxCost)
+      );
     });
   }
+  
 
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
@@ -221,6 +230,7 @@ export class MainComponent implements OnInit {
         endTime: this.ticketRequestEndTime,
         status: 'Pending'
       };
+      console.log(application);
 
       await addDoc(collection(this.firestore, 'ticketApplications'), application);
       this.snackBar.open('Application submitted successfully!', 'Close', {

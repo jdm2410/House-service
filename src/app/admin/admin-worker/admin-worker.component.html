@@ -1,0 +1,114 @@
+<app-admin-header></app-admin-header>
+<div class="admin-section">
+    <h2 class="section-title">Manage Workers</h2>
+
+    <div class="worker-cards-container">
+        <div *ngFor="let worker of workers$ | async" class="worker-card">
+            <div class="card-content">
+                <h3>{{ worker.name }} {{ worker.surname }}</h3>
+                <p><strong>Username:</strong> {{ worker.username }}</p>
+                <p><strong>Email:</strong> {{ worker.email }}</p>
+                <p><strong>Score:</strong> {{ worker.score }}</p>
+                <p><strong>Requests:</strong> {{ worker.requests }}</p>
+            </div>
+
+            <div class="card-actions">
+                <button (click)="selectWorker(worker)" class="edit-button">Edit</button>
+                <button (click)="deleteWorker(worker.id)" class="delete-button">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="worker-form-container">
+        <h3>{{ selectedWorker ? 'Edit Worker' : 'Create New Worker' }}</h3>
+
+        <form [formGroup]="workerForm" (ngSubmit)="selectedWorker ? updateWorker() : onWorkerSubmit()">
+            <!-- Username Field -->
+            <div>
+                <input formControlName="username" placeholder="Username" />
+                <div *ngIf="workerForm.get('username')?.touched && workerForm.get('username')?.invalid"
+                    class="error-message">
+                    <small *ngIf="workerForm.get('username')?.errors?.['required']">Username is required.</small>
+                </div>
+            </div>
+
+            <!-- Name Field -->
+            <div>
+                <input formControlName="name" placeholder="Name" />
+                <div *ngIf="workerForm.get('name')?.touched && workerForm.get('name')?.invalid" class="error-message">
+                    <small *ngIf="workerForm.get('name')?.errors?.['required']">Name is required.</small>
+                </div>
+            </div>
+
+            <div>
+                <input formControlName="surname" placeholder="Surname" />
+                <div *ngIf="workerForm.get('surname')?.touched && workerForm.get('surname')?.invalid"
+                    class="error-message">
+                    <small *ngIf="workerForm.get('surname')?.errors?.['required']">Surname is required.</small>
+                </div>
+            </div>
+
+            <!-- Email Field -->
+            <div>
+                <input formControlName="email" placeholder="Email" />
+                <div *ngIf="workerForm.get('email')?.touched && workerForm.get('email')?.invalid" class="error-message">
+                    <small *ngIf="workerForm.get('email')?.errors?.['required']">Email is required.</small>
+                    <small *ngIf="workerForm.get('email')?.errors?.['email']">Invalid email format.</small>
+                </div>
+            </div>
+
+            <!-- Score Field -->
+            <div>
+                <input formControlName="score" placeholder="Score" />
+                <div
+                    *ngIf="workerForm.get('score')?.invalid && (workerForm.get('score')?.touched || workerForm.get('score')?.dirty)">
+                    <span *ngIf="workerForm.get('score')?.errors?.['required']">Score is required.</span>
+                    <span *ngIf="workerForm.get('score')?.errors?.['pattern']">Score must be a digit (0-9).</span>
+                </div>
+            </div>
+
+            <!-- Requests Field -->
+            <div>
+                <input formControlName="requests" placeholder="Requests" />
+                <div
+                    *ngIf="workerForm.get('requests')?.invalid && (workerForm.get('requests')?.touched || workerForm.get('requests')?.dirty)">
+                    <span *ngIf="workerForm.get('requests')?.errors?.['required']">Requests are required.</span>
+                    <span *ngIf="workerForm.get('requests')?.errors?.['pattern']">Requests must be a digit (0-9).</span>
+                </div>
+            </div>
+
+            <!-- Password Fields (only show when creating a new worker) -->
+            <div *ngIf="!selectedWorker">
+                <div>
+                    <input formControlName="password" type="password" placeholder="Password" />
+                    <div *ngIf="workerForm.get('password')?.touched && workerForm.get('password')?.invalid"
+                        class="error-message">
+                        <small *ngIf="workerForm.get('password')?.errors?.['required']">Password is required.</small>
+                    </div>
+                </div>
+
+                <div>
+                    <input formControlName="confirmPassword" type="password" placeholder="Confirm Password" />
+                    <div *ngIf="workerForm.get('confirmPassword')?.touched && workerForm.get('confirmPassword')?.invalid"
+                        class="error-message">
+                        <small *ngIf="workerForm.get('confirmPassword')?.errors?.['required']">Confirm Password is
+                            required.</small>
+                        <small *ngIf="workerForm.errors?.['notSame']">Passwords do not match.</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div>
+                <button type="submit" class="submit-button">
+                    {{ selectedWorker ? 'Update Worker' : 'Create Worker' }}
+                </button>
+            </div>
+
+            <!-- Cancel Edit Button -->
+            <div *ngIf="selectedWorker">
+                <button type="button" (click)="cancelEdit()" class="cancel-button">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>

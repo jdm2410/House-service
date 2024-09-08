@@ -1,0 +1,38 @@
+<header class="admin-header bg-gray-800 shadow">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <!-- Logo Section -->
+            <div class="flex-shrink-0 flex items-center">
+                <a href="#" class="text-logo text-white">
+                    ADMIN DASHBOARD
+                </a>
+            </div>
+
+            <!-- Navigation Links for Admin -->
+            <div class="flex-grow flex items-center justify-center">
+                <nav class="space-x-4">
+                    <a routerLink="/admin-board" routerLinkActive="active-link"
+                        class="text-white hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium">
+                        Admin Board
+                    </a>
+                    <a routerLink="/admin-users" routerLinkActive="active-link"
+                        class="text-white hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium">
+                        Manage Users
+                    </a>
+                    <a routerLink="/admin-workers" routerLinkActive="active-link"
+                        class="text-white hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium">
+                        Manage Workers
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Right Side (Logout) -->
+            <div class="flex items-center space-x-4">
+                <button (click)="logout()"
+                    class="text-green-600 hover:text-green-700 px-3 py-2 rounded-md text-sm font-medium">
+                    Log Out
+                </button>
+            </div>
+        </div>
+    </div>
+</header>

@@ -23,6 +23,7 @@
     "@angular/router": "^18.0.0",
     "date-fns": "^3.6.0",
     "firebase": "^10.12.5",
+    "firebase-admin": "^12.4.0",
     "flatpickr": "^4.6.13",
     "ng2-flatpickr": "^9.0.0",
     "rxjs": "~7.8.0",

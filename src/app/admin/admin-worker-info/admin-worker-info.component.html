@@ -1,0 +1,191 @@
+<app-admin-header></app-admin-header>
+
+<div *ngIf="worker$ | async as worker" class="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto">
+    <!-- Worker Information -->
+    <h2 class="text-2xl font-semibold text-gray-800 mb-2">{{ worker.name }}</h2>
+    <p class="text-gray-700 mb-2"><strong>Name:</strong> {{ worker.name }}</p>
+    <p class="text-gray-700 mb-2"><strong>Email:</strong> {{ worker.email }}</p>
+
+    <!-- Edit Worker Button -->
+    <button *ngIf="!showEditForm" (click)="toggleEditForm()" class="px-4 py-2 bg-blue-600 text-white rounded-md">
+        Edit Worker Info
+    </button>
+
+    <!-- Worker Edit Form -->
+    <div *ngIf="showEditForm" class="bg-gray-100 p-6 rounded-lg shadow-md mt-6">
+        <h3 class="text-lg font-semibold mb-4">Edit Worker Info</h3>
+        <form [formGroup]="workerForm" (ngSubmit)="updateWorker()">
+            <div class="mb-4">
+                <label for="name" class="block text-gray-700 font-semibold">Name</label>
+                <input type="text" id="name" formControlName="name" class="w-full mt-2 p-2 border rounded-md" />
+            </div>
+
+            <div class="mb-4">
+                <label for="surname" class="block text-gray-700 font-semibold">Surname</label>
+                <input type="text" id="surname" formControlName="surname" class="w-full mt-2 p-2 border rounded-md" />
+            </div>
+
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700 font-semibold">Email</label>
+                <input type="email" id="email" formControlName="email" class="w-full mt-2 p-2 border rounded-md" />
+            </div>
+
+            <button type="submit" class="mt-4 px-4 py-2 bg-green-600 text-white rounded-md">
+                Update Worker Info
+            </button>
+            <button (click)="toggleEditForm()" type="button" class="mt-4 px-4 py-2 bg-gray-600 text-white rounded-md">
+                Cancel
+            </button>
+        </form>
+    </div>
+
+    <!-- Services Section -->
+    <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-4">Services</h3>
+
+    <div *ngIf="services.length > 0">
+        <ul class="space-y-4">
+            <li *ngFor="let service of services" [ngClass]="{
+                        'bg-blue-50 border-blue-300': editingServiceId === service.id, 
+                        'bg-gray-50': editingServiceId !== service.id
+                    }" class="p-4 rounded-lg shadow-sm border">
+                <p class="text-lg font-medium text-gray-900 mb-1">
+                    <strong>{{ service.name }}</strong>
+                    <span class="text-sm text-gray-500">({{ service.startTime | date: 'shortTime' }} - {{
+                        service.endTime | date: 'shortTime' }})</span>
+                </p>
+                <p class="text-gray-700">{{ service.description }}</p>
+                <div class="flex space-x-2 mt-2">
+                    <button *ngIf="editingServiceId !== service.id" (click)="editService(service)"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-md">
+                        Edit
+                    </button>
+                    <button *ngIf="service.id" (click)="deleteService(service.id)"
+                        class="px-4 py-2 bg-red-600 text-white rounded-md">
+                        Delete
+                    </button>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <ng-template #noServices>
+        <div class="bg-yellow-100 p-4 rounded-lg shadow-sm mt-4">
+            <p class="text-yellow-700">No services available.</p>
+        </div>
+    </ng-template>
+
+    <!-- Service Form -->
+    <div class="bg-gray-100 p-6 rounded-lg shadow-md mt-6">
+        <h3 class="text-lg font-semibold mb-4">{{ editingServiceId ? 'Edit Service' : 'Add Service' }}</h3>
+        <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()">
+            <div class="mb-4">
+                <label for="name" class="block text-gray-700 font-semibold">Service Name</label>
+                <input type="text" id="name" formControlName="name" class="w-full mt-2 p-2 border rounded-md" />
+            </div>
+
+            <div class="mb-4">
+                <label for="description" class="block text-gray-700 font-semibold">Description</label>
+                <textarea id="description" formControlName="description"
+                    class="w-full mt-2 p-2 border rounded-md"></textarea>
+            </div>
+
+            <div class="mb-4">
+                <label for="category" class="block text-gray-700 font-semibold">Category</label>
+                <select id="category" formControlName="category" class="w-full mt-2 p-2 border rounded-md">
+                    <option value="Kitchen">Kitchen</option>
+                    <option value="Garden">Garden</option>
+                    <option value="Bedroom">Bedroom</option>
+                    <option value="Plumbing">Plumbing</option>
+                    <option value="Painting">Painting</option>
+                    <option value="Woodwork">Woodwork</option>
+                    <option value="Electricity">Electricity</option>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label for="startTime" class="block text-gray-700 font-semibold">Start Time</label>
+                <input type="time" id="startTime" formControlName="startTime"
+                    class="w-full mt-2 p-2 border rounded-md" />
+            </div>
+
+            <div class="mb-4">
+                <label for="endTime" class="block text-gray-700 font-semibold">End Time</label>
+                <input type="time" id="endTime" formControlName="endTime" class="w-full mt-2 p-2 border rounded-md" />
+            </div>
+
+            <div class="mb-4">
+                <label for="cost" class="block text-gray-700 font-semibold">Average Cost</label>
+                <div class="flex items-center mt-2">
+                    <input type="number" id="cost" formControlName="cost" class="w-full p-2 border rounded-md" />
+                    <span class="ml-2 text-gray-700">€/hr</span>
+                </div>
+            </div>
+
+            <button type="submit" class="mt-4 px-4 py-2 bg-green-600 text-white rounded-md">
+                {{ editingServiceId ? 'Update Service' : 'Create Service' }}
+            </button>
+
+            <button *ngIf="editingServiceId" (click)="cancelEdit()" type="button"
+                class="mt-4 px-4 py-2 bg-gray-600 text-white rounded-md">
+                Cancel
+            </button>
+        </form>
+    </div>
+
+    <!-- Requests Section -->
+    <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-4">Requests</h3>
+    <button (click)="toggleRequestsSection()" class="px-4 py-2 bg-blue-600 text-white rounded-md">
+        {{ showRequests ? 'Hide' : 'Show' }} Requests
+    </button>
+
+    <div *ngIf="showRequests">
+        <div *ngIf="hasAcceptedRequests">
+            <h4 class="text-lg font-semibold text-gray-800 mt-6 mb-2">Accepted Requests</h4>
+            <ul class="space-y-4">
+                <li *ngFor="let request of acceptedRequests"
+                    class="bg-blue-50 border-blue-300 p-4 rounded-lg shadow-sm border">
+                    <p class="text-lg font-medium text-gray-900">{{ request.requestText }}</p>
+                    <div class="flex space-x-2 mt-2">
+                        <button (click)="viewRequestDetails(request)"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-md">
+                            View Details
+                        </button>
+                        <!-- Optionally add more buttons for actions like Delete or Update -->
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div *ngIf="hasConfirmedRequests">
+            <h4 class="text-lg font-semibold text-gray-800 mt-6 mb-2">Confirmed Requests</h4>
+            <ul class="space-y-4">
+                <li *ngFor="let request of confirmedRequests"
+                    class="bg-green-50 border-green-300 p-4 rounded-lg shadow-sm border">
+                    <p class="text-lg font-medium text-gray-900">{{ request.requestText }}</p>
+                    <div class="flex space-x-2 mt-2">
+                        <button (click)="viewRequestDetails(request)"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-md">
+                            View Details
+                        </button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div *ngIf="hasDeniedRequests">
+            <h4 class="text-lg font-semibold text-gray-800 mt-6 mb-2">Denied Requests</h4>
+            <ul class="space-y-4">
+                <li *ngFor="let request of historyRequests"
+                    class="bg-red-50 border-red-300 p-4 rounded-lg shadow-sm border">
+                    <p class="text-lg font-medium text-gray-900">{{ request.requestText }}</p>
+                    <div class="flex space-x-2 mt-2">
+                        <button (click)="viewRequestDetails(request)"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-md">
+                            View Details
+                        </button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

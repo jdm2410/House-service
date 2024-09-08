@@ -25,6 +25,12 @@ import { WorkerApplicationsComponent } from './worker-applications/worker-applic
 import { UserApplicationsComponent } from './user-applications/user-applications.component';
 import { CalendarUserComponent } from './calendar-user/calendar-user.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { AdminBoardComponent } from './admin/admin-board/admin-board.component';
+import { AdminUserComponent } from './admin/admin-user/admin-user.component';
+import { AdminWorkerComponent } from './admin/admin-worker/admin-worker.component';
+import { AdminHeaderComponent } from './admin/admin-header/admin-header.component';
+import { AdminUserInfoComponent } from './admin/admin-user-info/admin-user-info.component';
+import { AdminWorkerInfoComponent } from './admin/admin-worker-info/admin-worker-info.component';
 
 
 @NgModule({
@@ -42,7 +48,13 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     ProfileWorkerComponent,
     WorkerApplicationsComponent,
     UserApplicationsComponent,
-    CalendarUserComponent
+    CalendarUserComponent,
+    AdminBoardComponent,
+    AdminUserComponent,
+    AdminWorkerComponent,
+    AdminHeaderComponent,
+    AdminUserInfoComponent,
+    AdminWorkerInfoComponent
   ],
   imports: [
     BrowserModule,

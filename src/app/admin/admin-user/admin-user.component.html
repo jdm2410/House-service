@@ -1,0 +1,90 @@
+<app-admin-header></app-admin-header>
+<div class="admin-section">
+    <h2 class="section-title">Manage Users</h2>
+
+    <div class="user-cards-container">
+        <div *ngFor="let user of users$ | async" class="user-card">
+            <div class="card-content">
+                <h3>{{ user.username }}</h3>
+                <p><strong>Name:</strong> {{ user.name }} {{ user.surname }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Bio:</strong> {{ user.bio }}</p>
+            </div>
+
+            <div class="card-actions">
+                <button (click)="selectUser(user)" class="edit-button">Edit</button>
+                <button (click)="deleteUser(user.id)" class="delete-button">Delete</button>
+            </div>
+        </div>
+    </div>
+    <div class="user-form-container">
+        <h3>{{ selectedUser ? 'Edit User' : 'Create New User' }}</h3>
+
+        <form [formGroup]="userForm" (ngSubmit)="selectedUser ? updateUser() : onUserSubmit()">
+            <!-- Username Field -->
+            <div>
+                <input formControlName="username" placeholder="Username" />
+                <div *ngIf="userForm.get('username')?.touched && userForm.get('username')?.invalid"
+                    class="error-message">
+                    <small *ngIf="userForm.get('username')?.errors?.['required']">Username is required.</small>
+                </div>
+            </div>
+
+            <!-- Name Field -->
+            <div>
+                <input formControlName="name" placeholder="Name" />
+                <div *ngIf="userForm.get('name')?.touched && userForm.get('name')?.invalid" class="error-message">
+                    <small *ngIf="userForm.get('name')?.errors?.['required']">Name is required.</small>
+                </div>
+            </div>
+
+            <!-- Surname Field -->
+            <div>
+                <input formControlName="surname" placeholder="Surname" />
+                <div *ngIf="userForm.get('surname')?.touched && userForm.get('surname')?.invalid" class="error-message">
+                    <small *ngIf="userForm.get('surname')?.errors?.['required']">Surname is required.</small>
+                </div>
+            </div>
+
+            <!-- Email Field -->
+            <div>
+                <input formControlName="email" placeholder="Email" />
+                <div *ngIf="userForm.get('email')?.touched && userForm.get('email')?.invalid" class="error-message">
+                    <small *ngIf="userForm.get('email')?.errors?.['required']">Email is required.</small>
+                    <small *ngIf="userForm.get('email')?.errors?.['email']">Please enter a valid email.</small>
+                </div>
+            </div>
+
+            <!-- Bio Field -->
+            <div>
+                <textarea formControlName="bio" placeholder="Bio"></textarea>
+            </div>
+
+            <!-- Password Fields (only show when creating a new user) -->
+            <div *ngIf="!selectedUser">
+                <div>
+                    <input formControlName="password" type="password" placeholder="Password" />
+                    <div *ngIf="userForm.get('password')?.touched && userForm.get('password')?.invalid"
+                        class="error-message">
+                        <small *ngIf="userForm.get('password')?.errors?.['required']">Password is required.</small>
+                        <!-- Add more custom password validation error messages here, such as min length -->
+                    </div>
+                </div>
+
+                <div>
+                    <input formControlName="confirmPassword" type="password" placeholder="Confirm Password" />
+                    <div *ngIf="userForm.get('confirmPassword')?.touched && userForm.get('confirmPassword')?.invalid"
+                        class="error-message">
+                        <small *ngIf="userForm.get('confirmPassword')?.errors?.['required']">Confirmation password is
+                            required.</small>
+                        <small *ngIf="userForm.errors?.['notSame']">Passwords do not match.</small>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-button">{{ selectedUser ? 'Update User' : 'Create User' }}</button>
+        </form>
+    </div>
+
+
+</div>
